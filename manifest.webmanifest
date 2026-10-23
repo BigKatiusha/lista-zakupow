@@ -1,0 +1,19 @@
+{
+  "name": "Lista zakupów",
+  "short_name": "Zakupy",
+  "description": "Wspólna lista zakupów podzielona na sklepy. Działa offline i synchronizuje się na żywo.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F2F2F7",
+  "theme_color": "#F2F2F7",
+  "lang": "pl",
+  "dir": "ltr",
+  "categories": ["shopping", "lifestyle", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

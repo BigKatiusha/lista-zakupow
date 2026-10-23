@@ -1,0 +1,39 @@
+rules_version = '2';
+
+// Reguły bazy dla aplikacji „Lista zakupów”.
+// Dostęp ma tylko ten, kto zna długi, losowy kod listy (24 znaki = 120 bitów losowości).
+// Nie da się przeglądać ani wyszukiwać list – można jedynie otworzyć listę o znanym kodzie.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isListCode(id) {
+      return id.matches('^[0-9a-hjkmnp-tv-z]{24}$');
+    }
+
+    match /lists/{listId} {
+      // Dokument listy można odczytać tylko po kodzie (get), nigdy wyliczyć (list).
+      allow get: if isListCode(listId);
+      allow create, update: if isListCode(listId) && request.resource.data.size() < 20;
+      allow list, delete: if false;
+
+      match /stores/{storeId} {
+        allow read, delete: if isListCode(listId);
+        allow create, update: if isListCode(listId)
+          && request.resource.data.get('name', null) is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 60
+          && (request.resource.data.get('logo', null) == null
+              || (request.resource.data.logo is string && request.resource.data.logo.size() < 200000));
+      }
+
+      match /items/{itemId} {
+        allow read, delete: if isListCode(listId);
+        allow create, update: if isListCode(listId)
+          && request.resource.data.get('name', null) is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 200
+          && request.resource.data.get('storeId', null) is string;
+      }
+    }
+  }
+}
